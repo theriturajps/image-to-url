@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>QuickPix - Free Image Upload & Live URL Generator | Instant Image Hosting</title>
+
+	<!-- SEO Meta Tags -->
+	<meta name="description"
+		content="QuickPix - Upload images instantly and get live URLs for free. Fast, secure, and reliable image hosting service. No registration required. Perfect for sharing images online.">
+	<meta name="keywords"
+		content="free image upload, image hosting, live url generator, instant image sharing, free image host, image uploader, quickpix">
+	<meta name="author" content="QuickPix">
+	<meta name="robots" content="index, follow">
+
+	<!-- Open Graph Meta Tags -->
+	<meta property="og:title" content="QuickPix - Free Image Upload & Live URL Generator">
+	<meta property="og:description"
+		content="Upload images instantly and get live URLs for free. Fast, secure, and reliable image hosting service.">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://quickpix.com">
+	<meta property="og:image" content="https://quickpix.com/og-image.jpg">
+
+	<!-- Twitter Card Meta Tags -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="QuickPix - Free Image Upload & Live URL Generator">
+	<meta name="twitter:description"
+		content="Upload images instantly and get live URLs for free. Fast, secure, and reliable image hosting service.">
+
+	<!-- Canonical URL -->
+	<link rel="canonical" href="https://quickpix.com">
+
+	<!-- Favicon -->
+	<link rel="icon" type="image/x-icon"
+		href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'><path d='M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2zm16 2H4v12h16V6zM8 8l4 4 4-4-1.5 1.5L12 8l-2.5 1.5L8 8z'/></svg>">
+
+	<!-- JSON-LD Structured Data -->
+	<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "QuickPix",
+        "description": "Free image upload and live URL generator service",
+        "url": "https://quickpix.com",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "Any",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        }
+    }
+    </script>
+
+	<style>
+		:root {
+			--bg-primary: #ffffff;
+			--bg-secondary: #f8fafc;
+			--text-primary: #1e293b;
+			--text-secondary: #64748b;
+			--accent: #6366f1;
+			--accent-hover: #4f46e5;
+			--border: #e2e8f0;
+			--success: #10b981;
+			--error: #ef4444;
+			--shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+			--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+		}
+
+		[data-theme="dark"] {
+			--bg-primary: #0f172a;
+			--bg-secondary: #1e293b;
+			--text-primary: #f1f5f9;
+			--text-secondary: #94a3b8;
+			--border: #334155;
+			--shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+			--shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+			background: var(--bg-primary);
+			color: var(--text-primary);
+			line-height: 1.6;
+			transition: all 0.3s ease;
+		}
+
+		.container {
+			max-width: 480px;
+			margin: 0 auto;
+			padding: 20px;
+			min-height: 100vh;
+			display: flex;
+			flex-direction: column;
+		}
+
+		header {
+			text-align: center;
+			margin-bottom: 32px;
+			position: relative;
+		}
+
+		.theme-toggle {
+			position: absolute;
+			top: 0;
+			right: 0;
+			background: none;
+			border: 2px solid var(--border);
+			border-radius: 50%;
+			width: 44px;
+			height: 44px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			transition: all 0.3s ease;
+			font-size: 18px;
+		}
+
+		.theme-toggle:hover {
+			border-color: var(--accent);
+			transform: scale(1.05);
+		}
+
+		.logo {
+			font-size: 2.5rem;
+			font-weight: 800;
+			background: linear-gradient(135deg, var(--accent), #8b5cf6);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			background-clip: text;
+			margin-bottom: 8px;
+		}
+
+		.tagline {
+			color: var(--text-secondary);
+			font-size: 1.1rem;
+			margin-bottom: 16px;
+		}
+
+		.features {
+			display: flex;
+			justify-content: center;
+			gap: 24px;
+			margin-bottom: 32px;
+			flex-wrap: wrap;
+		}
+
+		.feature {
+			display: flex;
+			align-items: center;
+			gap: 6px;
+			color: var(--text-secondary);
+			font-size: 0.9rem;
+		}
+
+		.upload-section {
+			background: var(--bg-secondary);
+			border: 2px dashed var(--border);
+			border-radius: 16px;
+			padding: 32px 24px;
+			text-align: center;
+			margin-bottom: 24px;
+			transition: all 0.3s ease;
+			cursor: pointer;
+		}
+
+		.upload-section:hover {
+			border-color: var(--accent);
+			background: var(--bg-primary);
+		}
+
+		.upload-section.dragover {
+			border-color: var(--accent);
+			background: var(--accent);
+			color: white;
+			transform: scale(1.02);
+		}
+
+		.upload-icon {
+			font-size: 3rem;
+			margin-bottom: 16px;
+			opacity: 0.6;
+		}
+
+		.upload-text {
+			font-size: 1.1rem;
+			margin-bottom: 8px;
+			font-weight: 600;
+		}
+
+		.upload-subtext {
+			color: var(--text-secondary);
+			font-size: 0.9rem;
+			margin-bottom: 20px;
+		}
+
+		.file-input {
+			display: none;
+		}
+
+		.upload-btn {
+			background: var(--accent);
+			color: white;
+			border: none;
+			padding: 12px 24px;
+			border-radius: 8px;
+			font-size: 1rem;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.upload-btn:hover {
+			background: var(--accent-hover);
+			transform: translateY(-2px);
+		}
+
+		.upload-btn:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+			transform: none;
+		}
+
+		.progress-bar {
+			width: 100%;
+			height: 4px;
+			background: var(--border);
+			border-radius: 2px;
+			overflow: hidden;
+			margin: 16px 0;
+			display: none;
+		}
+
+		.progress-fill {
+			height: 100%;
+			background: var(--accent);
+			width: 0%;
+			transition: width 0.3s ease;
+		}
+
+		.preview-section {
+			display: none;
+			background: var(--bg-secondary);
+			border: 1px solid var(--border);
+			border-radius: 12px;
+			padding: 20px;
+			margin-bottom: 24px;
+		}
+
+		.preview-image {
+			width: 100%;
+			max-height: 200px;
+			object-fit: contain;
+			border-radius: 8px;
+			margin-bottom: 16px;
+		}
+
+		.filename-input-container {
+			margin-bottom: 16px;
+		}
+
+		.filename-label {
+			display: block;
+			margin-bottom: 8px;
+			color: var(--text-secondary);
+			font-size: 0.9rem;
+		}
+
+		.filename-input {
+			width: 100%;
+			padding: 12px;
+			border: 1px solid var(--border);
+			border-radius: 8px;
+			font-size: 0.9rem;
+			background: var(--bg-primary);
+			color: var(--text-primary);
+		}
+
+		.upload-controls {
+			display: flex;
+			gap: 12px;
+		}
+
+		.upload-confirm-btn {
+			flex: 1;
+			background: var(--success);
+			color: white;
+			border: none;
+			padding: 12px 16px;
+			border-radius: 8px;
+			font-size: 1rem;
+			font-weight: 600;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.upload-confirm-btn:hover {
+			background: #059669;
+			transform: translateY(-2px);
+		}
+
+		.upload-confirm-btn:disabled {
+			opacity: 0.6;
+			cursor: not-allowed;
+			transform: none;
+		}
+
+		.cancel-btn {
+			background: transparent;
+			color: var(--text-secondary);
+			border: 1px solid var(--border);
+			padding: 12px 16px;
+			border-radius: 8px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.cancel-btn:hover {
+			background: var(--bg-primary);
+			color: var(--text-primary);
+		}
+
+		.result-section {
+			display: none;
+			background: var(--bg-secondary);
+			border: 1px solid var(--border);
+			border-radius: 12px;
+			padding: 20px;
+			margin-bottom: 24px;
+		}
+
+		.result-image {
+			width: 100%;
+			max-height: 200px;
+			object-fit: contain;
+			border-radius: 8px;
+			margin-bottom: 16px;
+			box-shadow: var(--shadow);
+		}
+
+		.url-container {
+			display: flex;
+			gap: 8px;
+			margin-bottom: 12px;
+		}
+
+		.url-input {
+			flex: 1;
+			padding: 12px;
+			border: 1px solid var(--border);
+			border-radius: 8px;
+			font-size: 0.9rem;
+			background: var(--bg-primary);
+			color: var(--text-primary);
+		}
+
+		.copy-btn {
+			padding: 12px 16px;
+			background: var(--success);
+			color: white;
+			border: none;
+			border-radius: 8px;
+			cursor: pointer;
+			font-weight: 600;
+			transition: all 0.3s ease;
+		}
+
+		.copy-btn:hover {
+			transform: translateY(-2px);
+		}
+
+		.copy-btn.copied {
+			background: var(--accent);
+		}
+
+		.reset-btn {
+			width: 100%;
+			padding: 10px;
+			background: transparent;
+			color: var(--text-secondary);
+			border: 1px solid var(--border);
+			border-radius: 8px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+		}
+
+		.reset-btn:hover {
+			background: var(--bg-primary);
+			color: var(--text-primary);
+		}
+
+		.error-message {
+			background: #fef2f2;
+			color: var(--error);
+			padding: 12px;
+			border-radius: 8px;
+			margin-bottom: 16px;
+			border: 1px solid #fecaca;
+			display: none;
+		}
+
+		[data-theme="dark"] .error-message {
+			background: #371c1c;
+			border-color: #7f1d1d;
+		}
+
+		footer {
+			margin-top: auto;
+			text-align: center;
+			padding: 24px 0;
+			color: var(--text-secondary);
+			font-size: 0.9rem;
+		}
+
+		.footer-links {
+			display: flex;
+			justify-content: center;
+			gap: 20px;
+			margin-bottom: 12px;
+		}
+
+		.footer-links a {
+			color: var(--text-secondary);
+			text-decoration: none;
+			transition: color 0.3s ease;
+		}
+
+		.footer-links a:hover {
+			color: var(--accent);
+		}
+
+		@media (max-width: 640px) {
+			.container {
+				padding: 16px;
+			}
+
+			.logo {
+				font-size: 2rem;
+			}
+
+			.features {
+				gap: 16px;
+			}
+
+			.feature {
+				font-size: 0.8rem;
+			}
+
+			.upload-section {
+				padding: 24px 16px;
+			}
+
+			.upload-icon {
+				font-size: 2.5rem;
+			}
+
+			.footer-links {
+				flex-direction: column;
+				gap: 8px;
+			}
+
+			.upload-controls {
+				flex-direction: column;
+			}
+		}
+
+		.loading {
+			animation: pulse 2s infinite;
+		}
+
+		@keyframes pulse {
+
+			0%,
+			100% {
+				opacity: 1;
+			}
+
+			50% {
+				opacity: 0.5;
+			}
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<header>
+			<button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+				🌙
+			</button>
+			<h1 class="logo">QuickPix</h1>
+			<p class="tagline">Upload images instantly & get live URLs</p>
+			<div class="features">
+				<div class="feature">
+					<span>⚡</span>
+					<span>Instant Upload</span>
+				</div>
+				<div class="feature">
+					<span>🔒</span>
+					<span>Secure</span>
+				</div>
+				<div class="feature">
+					<span>🆓</span>
+					<span>Free Forever</span>
+				</div>
+			</div>
+		</header>
+
+		<main>
+			<div class="error-message" id="errorMessage"></div>
+
+			<div class="upload-section" id="uploadSection">
+				<div class="upload-icon">📸</div>
+				<div class="upload-text">Drop your image here</div>
+				<div class="upload-subtext">or click to browse (max 32MB)</div>
+				<input type="file" class="file-input" id="fileInput" accept="image/*">
+				<button class="upload-btn" id="uploadBtn">Choose Image</button>
+			</div>
+
+			<div class="preview-section" id="previewSection">
+				<img class="preview-image" id="previewImage" alt="Image preview">
+				<div class="filename-input-container">
+					<label for="filenameInput" class="filename-label">Image name (optional):</label>
+					<input type="text" class="filename-input" id="filenameInput" placeholder="e.g., my-image-name">
+				</div>
+				<div class="upload-controls">
+					<button class="upload-confirm-btn" id="uploadConfirmBtn">Upload Image</button>
+					<button class="cancel-btn" id="cancelBtn">Cancel</button>
+				</div>
+				<div class="progress-bar" id="progressBar">
+					<div class="progress-fill" id="progressFill"></div>
+				</div>
+			</div>
+
+			<div class="result-section" id="resultSection">
+				<img class="result-image" id="resultImage" alt="Uploaded image">
+				<div class="url-container">
+					<input type="text" class="url-input" id="urlInput" readonly>
+					<button class="copy-btn" id="copyBtn">Copy</button>
+				</div>
+				<button class="reset-btn" id="resetBtn">Upload Another Image</button>
+			</div>
+		</main>
+
+		<footer>
+			<div class="footer-links">
+				<a href="#privacy">Privacy Policy</a>
+				<a href="#terms">Terms of Service</a>
+				<a href="#contact">Contact</a>
+			</div>
+			<p>&copy; 2025 QuickPix. Free image hosting service.</p>
+		</footer>
+	</div>
+
+	<script>
+		// Theme management
+		const themeToggle = document.getElementById('themeToggle');
+		const body = document.body;
+
+		function setTheme(theme) {
+			if (theme === 'system') {
+				const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+				body.setAttribute('data-theme', systemTheme);
+				themeToggle.textContent = '💻';
+			} else {
+				body.setAttribute('data-theme', theme);
+				themeToggle.textContent = theme === 'dark' ? '☀️' : '🌙';
+			}
+			localStorage.setItem('theme', theme);
+		}
+
+		function getNextTheme(currentTheme) {
+			const themes = ['light', 'dark', 'system'];
+			const currentIndex = themes.indexOf(currentTheme);
+			return themes[(currentIndex + 1) % themes.length];
+		}
+
+		// Initialize theme
+		const savedTheme = localStorage.getItem('theme') || 'system';
+		setTheme(savedTheme);
+
+		themeToggle.addEventListener('click', () => {
+			const currentTheme = localStorage.getItem('theme') || 'system';
+			const nextTheme = getNextTheme(currentTheme);
+			setTheme(nextTheme);
+		});
+
+		// Listen for system theme changes
+		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+			if (localStorage.getItem('theme') === 'system') {
+				setTheme('system');
+			}
+		});
+
+		// File upload functionality
+		const uploadSection = document.getElementById('uploadSection');
+		const fileInput = document.getElementById('fileInput');
+		const uploadBtn = document.getElementById('uploadBtn');
+		const previewSection = document.getElementById('previewSection');
+		const previewImage = document.getElementById('previewImage');
+		const filenameInput = document.getElementById('filenameInput');
+		const uploadConfirmBtn = document.getElementById('uploadConfirmBtn');
+		const cancelBtn = document.getElementById('cancelBtn');
+		const progressBar = document.getElementById('progressBar');
+		const progressFill = document.getElementById('progressFill');
+		const resultSection = document.getElementById('resultSection');
+		const resultImage = document.getElementById('resultImage');
+		const urlInput = document.getElementById('urlInput');
+		const copyBtn = document.getElementById('copyBtn');
+		const resetBtn = document.getElementById('resetBtn');
+		const errorMessage = document.getElementById('errorMessage');
+
+		// ImgBB API key (you'll need to get your own from https://api.imgbb.com/)
+		const IMGBB_API_KEY = '04c10fc49b812442e1e6adacbb1896b2';
+
+		let selectedFile = null;
+
+		// Function to convert filename to slug format
+		function toSlug(filename) {
+			// Remove extension
+			const nameWithoutExt = filename.replace(/\.[^/.]+$/, '');
+			// Convert to lowercase and replace spaces/special chars with hyphens
+			return nameWithoutExt
+				.toLowerCase()
+				.replace(/[^a-z0-9]+/g, '-')
+				.replace(/^-+|-+$/g, '');
+		}
+
+		function showError(message) {
+			errorMessage.textContent = message;
+			errorMessage.style.display = 'block';
+			setTimeout(() => {
+				errorMessage.style.display = 'none';
+			}, 5000);
+		}
+
+		function hideError() {
+			errorMessage.style.display = 'none';
+		}
+
+		function validateFile(file) {
+			if (!file) {
+				showError('Please select a file');
+				return false;
+			}
+
+			if (!file.type.startsWith('image/')) {
+				showError('Please select an image file');
+				return false;
+			}
+
+			if (file.size > 32 * 1024 * 1024) {
+				showError('File size must be less than 32MB');
+				return false;
+			}
+
+			return true;
+		}
+
+		function updateProgress(percent) {
+			progressFill.style.width = percent + '%';
+		}
+
+		function resetUI() {
+			uploadSection.style.display = 'block';
+			previewSection.style.display = 'none';
+			resultSection.style.display = 'none';
+			progressBar.style.display = 'none';
+			uploadBtn.disabled = false;
+			uploadConfirmBtn.disabled = false;
+			uploadConfirmBtn.textContent = 'Upload Image';
+			updateProgress(0);
+			hideError();
+			filenameInput.value = '';
+			selectedFile = null;
+		}
+
+		function showPreview(file) {
+			if (!validateFile(file)) return;
+
+			selectedFile = file;
+			hideError();
+
+			// Show preview image
+			const reader = new FileReader();
+			reader.onload = (e) => {
+				previewImage.src = e.target.result;
+			};
+			reader.readAsDataURL(file);
+
+			// Set default filename to slugified version of original filename
+			filenameInput.value = toSlug(file.name);
+
+			// Show preview section
+			uploadSection.style.display = 'none';
+			previewSection.style.display = 'block';
+		}
+
+		async function uploadImage() {
+			if (!selectedFile) return;
+
+			hideError();
+			uploadConfirmBtn.disabled = true;
+			uploadConfirmBtn.textContent = 'Uploading...';
+			progressBar.style.display = 'block';
+			updateProgress(10);
+
+			const formData = new FormData();
+			formData.append('image', selectedFile);
+
+			// Add filename if provided
+			if (filenameInput.value.trim()) {
+				const slugName = toSlug(filenameInput.value);
+				formData.append('name', slugName);
+			}
+
+			try {
+				updateProgress(30);
+
+				const response = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+					method: 'POST',
+					body: formData
+				});
+
+				updateProgress(70);
+
+				if (!response.ok) {
+					throw new Error('Upload failed');
+				}
+
+				const data = await response.json();
+				updateProgress(90);
+
+				if (data.success) {
+					const imageUrl = data.data.url;
+					resultImage.src = imageUrl;
+					urlInput.value = imageUrl;
+
+					previewSection.style.display = 'none';
+					resultSection.style.display = 'block';
+					updateProgress(100);
+
+					setTimeout(() => {
+						progressBar.style.display = 'none';
+					}, 500);
+				} else {
+					throw new Error(data.error?.message || 'Upload failed');
+				}
+			} catch (error) {
+				console.error('Upload error:', error);
+				showError('Upload failed. Please try again.');
+				uploadConfirmBtn.disabled = false;
+				uploadConfirmBtn.textContent = 'Upload Image';
+				progressBar.style.display = 'none';
+			}
+		}
+
+		// Real-time slug conversion for filename input
+		filenameInput.addEventListener('input', (e) => {
+			const originalValue = e.target.value;
+			const slugValue = toSlug(originalValue);
+
+			// Only update if the value is different to avoid cursor jumping
+			if (originalValue !== slugValue) {
+				const cursorPosition = e.target.selectionStart;
+				e.target.value = slugValue;
+				// Try to maintain cursor position
+				e.target.setSelectionRange(cursorPosition, cursorPosition);
+			}
+		});
+
+		// Event listeners
+		uploadBtn.addEventListener('click', () => fileInput.click());
+		fileInput.addEventListener('change', (e) => {
+			if (e.target.files[0]) {
+				showPreview(e.target.files[0]);
+			}
+		});
+
+		uploadConfirmBtn.addEventListener('click', uploadImage);
+		cancelBtn.addEventListener('click', resetUI);
+
+		// Drag and drop
+		uploadSection.addEventListener('dragover', (e) => {
+			e.preventDefault();
+			uploadSection.classList.add('dragover');
+		});
+
+		uploadSection.addEventListener('dragleave', (e) => {
+			e.preventDefault();
+			uploadSection.classList.remove('dragover');
+		});
+
+		uploadSection.addEventListener('drop', (e) => {
+			e.preventDefault();
+			uploadSection.classList.remove('dragover');
+
+			const files = e.dataTransfer.files;
+			if (files.length > 0) {
+				showPreview(files[0]);
+			}
+		});
+
+		// Copy functionality
+		copyBtn.addEventListener('click', async () => {
+			try {
+				await navigator.clipboard.writeText(urlInput.value);
+				copyBtn.textContent = 'Copied!';
+				copyBtn.classList.add('copied');
+				setTimeout(() => {
+					copyBtn.textContent = 'Copy';
+					copyBtn.classList.remove('copied');
+				}, 2000);
+			} catch (err) {
+				// Fallback for browsers that don't support clipboard API
+				urlInput.select();
+				document.execCommand('copy');
+				copyBtn.textContent = 'Copied!';
+				copyBtn.classList.add('copied');
+				setTimeout(() => {
+					copyBtn.textContent = 'Copy';
+					copyBtn.classList.remove('copied');
+				}, 2000);
+			}
+		});
+
+		resetBtn.addEventListener('click', () => {
+			resetUI();
+			fileInput.value = '';
+		});
+
+		// Service Worker for PWA (optional)
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('load', () => {
+				navigator.serviceWorker.register('/sw.js').catch(() => {
+					// Service worker registration failed - not critical
+				});
+			});
+		}
+	</script>
+</body>
+
+</html>

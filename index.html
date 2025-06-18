@@ -523,23 +523,6 @@
 			font-size: 0.9rem;
 		}
 
-		.footer-links {
-			display: flex;
-			justify-content: center;
-			gap: 20px;
-			margin-bottom: 12px;
-		}
-
-		.footer-links a {
-			color: var(--text-secondary);
-			text-decoration: none;
-			transition: color 0.3s ease;
-		}
-
-		.footer-links a:hover {
-			color: var(--accent);
-		}
-
 		@media (max-width: 640px) {
 			.container {
 				padding: 16px;
@@ -564,12 +547,7 @@
 			.upload-icon {
 				font-size: 2.5rem;
 			}
-
-			.footer-links {
-				flex-direction: column;
-				gap: 8px;
-			}
-
+			
 			.upload-controls {
 				flex-direction: column;
 			}
@@ -584,9 +562,12 @@
 		}
 
 		@keyframes pulse {
-			0%, 100% {
+
+			0%,
+			100% {
 				opacity: 1;
 			}
+
 			50% {
 				opacity: 0.5;
 			}
@@ -687,11 +668,6 @@
 		</main>
 
 		<footer>
-			<div class="footer-links">
-				<a href="#privacy">Privacy Policy</a>
-				<a href="#terms">Terms of Service</a>
-				<a href="#contact">Contact</a>
-			</div>
 			<p>&copy; 2025 QuickPix. Free image hosting service.</p>
 		</footer>
 	</div>
@@ -746,11 +722,11 @@
 			// Remove active class from all tabs and content
 			document.querySelectorAll('.tab-btn').forEach(tab => tab.classList.remove('active'));
 			document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-			
+
 			// Add active class to selected tab and content
 			activeTab.classList.add('active');
 			activeContent.classList.add('active');
-			
+
 			// Reset UI when switching tabs
 			resetUI();
 		}
@@ -875,14 +851,14 @@
 			try {
 				// Create a proxy URL to avoid CORS issues
 				const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-				
+
 				const response = await fetch(proxyUrl);
 				if (!response.ok) {
 					throw new Error('Failed to load image');
 				}
 
 				const blob = await response.blob();
-				
+
 				// Check if it's actually an image
 				if (!blob.type.startsWith('image/')) {
 					throw new Error('URL does not point to a valid image');
@@ -891,12 +867,12 @@
 				// Create a file object from the blob
 				const filename = url.split('/').pop().split('?')[0] || 'image';
 				const file = new File([blob], filename, { type: blob.type });
-				
+
 				selectedFile = file;
 				isFromUrl = true;
-				
+
 				showPreview(file);
-				
+
 			} catch (error) {
 				console.error('URL load error:', error);
 				showError('Failed to load image from URL. Please check the URL or try a different image.');
@@ -975,7 +951,7 @@
 				// Convert image format if needed
 				const selectedFormat = formatSelect.value;
 				let fileToUpload = selectedFile;
-				
+
 				if (selectedFormat !== 'original') {
 					uploadConfirmBtn.textContent = 'Converting...';
 					updateProgress(20);

@@ -19,8 +19,8 @@
   <meta property="og:description"
     content="Upload images instantly and get live URLs for free. Fast, secure, and reliable image hosting service.">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://quickpix.com">
-  <meta property="og:image" content="https://quickpix.com/og-image.jpg">
+  <meta property="og:url" content="https://theriturajps.github.io/image-to-url/">
+  <meta property="og:image" content="https://theriturajps.github.io/image-to-url/og-image.jpg">
   <meta property="og:site_name" content="QuickPix">
   
   <!-- Twitter Card Meta Tags -->
@@ -28,7 +28,7 @@
   <meta name="twitter:title" content="QuickPix - Free Image Upload & Live URL Generator">
   <meta name="twitter:description"
     content="Upload images instantly and get live URLs for free. Fast, secure, and reliable image hosting service.">
-  <meta name="twitter:image" content="https://quickpix.com/og-image.jpg">
+  <meta name="twitter:image" content="https://theriturajps.github.io/image-to-url/og-image.jpg">
   
   <!-- Additional SEO Meta Tags -->
   <meta name="theme-color" content="#6366f1">
@@ -37,11 +37,13 @@
   <meta name="apple-mobile-web-app-title" content="QuickPix">
   
   <!-- Canonical URL -->
-  <link rel="canonical" href="https://quickpix.com">
+  <link rel="canonical" href="https://theriturajps.github.io/image-to-url/">
   
   <!-- Preconnect for performance -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://api.imgbb.com">
+  <link rel="preconnect" href="https://cors-anywhere.herokuapp.com">
+  <link rel="preconnect" href="https://api.codetabs.com">
   
   <!-- Favicon -->
   <link rel="icon" type="image/x-icon" href="data:image/svg+xml,
@@ -57,7 +59,7 @@
         "@type": "WebApplication",
         "name": "QuickPix",
         "description": "Free image upload and live URL generator service with format conversion",
-        "url": "https://quickpix.com",
+        "url": "https://theriturajps.github.io/image-to-url/",
         "applicationCategory": "UtilityApplication",
         "operatingSystem": "Any",
         "browserRequirements": "Requires JavaScript. Requires HTML5.",
@@ -74,7 +76,7 @@
           "URL-based image upload",
           "No registration required"
         ],
-        "screenshot": "https://quickpix.com/screenshot.jpg"
+        "screenshot": "https://theriturajps.github.io/image-to-url/screenshot.jpg"
       }
     </script>
   
@@ -89,6 +91,7 @@
       --border: #e2e8f0;
       --success: #10b981;
       --error: #ef4444;
+      --warning: #f59e0b;
       --shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
       --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
       --radius-sm: 4px;
@@ -323,12 +326,20 @@
       background: var(--success);
     }
 
+    .btn-warning {
+      background: var(--warning);
+    }
+
     #urlSubmitBtn {
       margin-top: 10px;
     }
 
     .btn-success:hover {
       background: #059669;
+    }
+
+    .btn-warning:hover {
+      background: #d97706;
     }
 
     .btn-outline {
@@ -441,9 +452,25 @@
       display: none;
     }
 
+    .warning-message {
+      background: #fffbeb;
+      color: var(--warning);
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      margin-bottom: 16px;
+      border: 1px solid #fed7aa;
+      font-size: 0.85rem;
+      display: none;
+    }
+
     [data-theme="dark"] .error-message {
       background: #371c1c;
       border-color: #7f1d1d;
+    }
+
+    [data-theme="dark"] .warning-message {
+      background: #451a03;
+      border-color: #92400e;
     }
 
     .filename-preview {
@@ -451,6 +478,20 @@
       color: var(--text-secondary);
       margin-top: 4px;
       font-style: italic;
+    }
+
+    .cors-notice {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      margin-top: 12px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .cors-notice strong {
+      color: var(--text-primary);
     }
 
     footer {
@@ -528,6 +569,7 @@
     
     <main>
       <div class="error-message" id="errorMessage"></div>
+      <div class="warning-message" id="warningMessage"></div>
       
       <div class="upload-tabs">
         <button class="tab-btn active" id="fileTab">File Upload</button>
@@ -552,6 +594,9 @@
           <div class="input-group">
             <input type="url" class="input-field" id="imageUrlInput" placeholder="https://example.com/image.jpg">
             <button class="btn btn-success" id="urlSubmitBtn">Load Image</button>
+          </div>
+          <div class="cors-notice">
+            <strong>Note:</strong> Some websites block direct image loading due to security policies. If an image fails to load, try downloading it first and using the file upload instead.
           </div>
         </div>
       </div>
@@ -673,6 +718,7 @@
     const copyBtn = document.getElementById('copyBtn');
     const resetBtn = document.getElementById('resetBtn');
     const errorMessage = document.getElementById('errorMessage');
+    const warningMessage = document.getElementById('warningMessage');
 
     // ImgBB API key
     const IMGBB_API_KEY = '04c10fc49b812442e1e6adacbb1896b2';
@@ -749,13 +795,24 @@
     function showError(message) {
       errorMessage.textContent = message;
       errorMessage.style.display = 'block';
+      warningMessage.style.display = 'none';
       setTimeout(() => {
         errorMessage.style.display = 'none';
-      }, 5000);
+      }, 8000);
     }
 
-    function hideError() {
+    function showWarning(message) {
+      warningMessage.textContent = message;
+      warningMessage.style.display = 'block';
       errorMessage.style.display = 'none';
+      setTimeout(() => {
+        warningMessage.style.display = 'none';
+      }, 10000);
+    }
+
+    function hideMessages() {
+      errorMessage.style.display = 'none';
+      warningMessage.style.display = 'none';
     }
 
     function validateFile(file) {
@@ -777,7 +834,7 @@
     function isValidImageUrl(url) {
       try {
         new URL(url);
-        return /\.(jpg|jpeg|png|gif|webp|bmp|svg|avif|jxl|tiff?)$/i.test(url) ||
+        return /\.(jpg|jpeg|png|gif|webp|bmp|svg|avif|jxl|tiff?)(\?.*)?$/i.test(url) ||
           url.includes('image') ||
           url.includes('img') ||
           url.includes('photo') ||
@@ -802,7 +859,7 @@
       uploadConfirmBtn.textContent = 'Upload';
       urlSubmitBtn.textContent = 'Load Image';
       updateProgress(0);
-      hideError();
+      hideMessages();
       filenameInput.value = '';
       filenamePreview.textContent = '';
       imageUrlInput.value = '';
@@ -812,57 +869,156 @@
       originalFileName = '';
     }
 
+    // Multiple proxy services for better reliability
+    const proxyServices = [
+      {
+        name: 'CodeTabs',
+        url: (imageUrl) => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(imageUrl)}`,
+        headers: {}
+      },
+      {
+        name: 'AllOrigins',
+        url: (imageUrl) => `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`,
+        headers: {}
+      },
+      {
+        name: 'ThingProxy',
+        url: (imageUrl) => `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(imageUrl)}`,
+        headers: {}
+      }
+    ];
+
     async function loadImageFromUrl(url) {
       if (!url.trim()) {
         showError('Please enter a valid image URL');
         return;
       }
       if (!isValidImageUrl(url)) {
-        showError('Please enter a valid image URL');
+        showError('Please enter a valid image URL (must end with image extension or contain image-related keywords)');
         return;
       }
 
-      hideError();
+      hideMessages();
       urlSubmitBtn.disabled = true;
       urlSubmitBtn.textContent = 'Loading...';
 
+      // Try direct fetch first (for CORS-enabled URLs)
       try {
-        const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-        const response = await fetch(proxyUrl);
+        const directResponse = await fetch(url, { 
+          method: 'HEAD',
+          mode: 'no-cors'
+        });
         
-        if (!response.ok) {
-          throw new Error('Failed to load image');
+        // If we get here without error, try to load the image directly
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        
+        const imageLoadPromise = new Promise((resolve, reject) => {
+          img.onload = () => {
+            // Convert image to blob
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0);
+            
+            canvas.toBlob((blob) => {
+              if (blob) {
+                resolve(blob);
+              } else {
+                reject(new Error('Failed to convert image to blob'));
+              }
+            }, 'image/png');
+          };
+          
+          img.onerror = () => reject(new Error('Failed to load image directly'));
+          
+          // Timeout after 10 seconds
+          setTimeout(() => reject(new Error('Image loading timeout')), 10000);
+        });
+        
+        img.src = url;
+        
+        try {
+          const blob = await imageLoadPromise;
+          const urlPath = new URL(url).pathname;
+          const filename = urlPath.split('/').pop() || 'image-from-url.png';
+          const file = new File([blob], filename, { type: blob.type });
+          
+          selectedFile = file;
+          isFromUrl = true;
+          originalFileName = filename;
+          showPreview(file);
+          showWarning('Image loaded successfully! Some images may appear different due to CORS restrictions.');
+          return;
+        } catch (directError) {
+          console.log('Direct loading failed, trying proxy services...');
         }
-
-        const blob = await response.blob();
-        
-        if (!blob.type.startsWith('image/')) {
-          throw new Error('URL does not point to a valid image');
-        }
-
-        // Extract filename from URL
-        const urlPath = new URL(url).pathname;
-        const filename = urlPath.split('/').pop() || 'image';
-        
-        const file = new File([blob], filename, { type: blob.type });
-        selectedFile = file;
-        isFromUrl = true;
-        originalFileName = filename;
-        showPreview(file);
-        
-      } catch (error) {
-        console.error('URL load error:', error);
-        showError('Failed to load image from URL. Please check the URL or try a different image.');
-      } finally {
-        urlSubmitBtn.disabled = false;
-        urlSubmitBtn.textContent = 'Load Image';
+      } catch (directError) {
+        console.log('Direct fetch failed, trying proxy services...');
       }
+
+      // Try proxy services
+      let lastError = null;
+      
+      for (const proxy of proxyServices) {
+        try {
+          urlSubmitBtn.textContent = `Trying ${proxy.name}...`;
+          
+          const proxyUrl = proxy.url(url);
+          const response = await fetch(proxyUrl, {
+            headers: proxy.headers,
+            timeout: 15000
+          });
+          
+          if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+          }
+
+          const blob = await response.blob();
+          
+          if (!blob.type.startsWith('image/') && blob.size < 1000) {
+            // Likely an error response, not an image
+            const text = await blob.text();
+            throw new Error(`Invalid response: ${text.substring(0, 100)}`);
+          }
+
+          // Extract filename from URL
+          const urlPath = new URL(url).pathname;
+          const filename = urlPath.split('/').pop() || 'image-from-url';
+          
+          const file = new File([blob], filename, { type: blob.type || 'image/png' });
+          selectedFile = file;
+          isFromUrl = true;
+          originalFileName = filename;
+          showPreview(file);
+          showWarning(`Image loaded successfully via ${proxy.name}! Note: Some websites block image loading due to security policies.`);
+          return;
+          
+        } catch (error) {
+          console.error(`${proxy.name} failed:`, error);
+          lastError = error;
+          continue;
+        }
+      }
+
+      // All methods failed
+      console.error('All proxy methods failed:', lastError);
+      showError(`Failed to load image from URL. This can happen due to:
+        • Website blocking external access (CORS policy)
+        • Invalid or broken image URL
+        • Network connectivity issues
+        
+        Try: Download the image and use file upload instead.`);
+      
+      urlSubmitBtn.disabled = false;
+      urlSubmitBtn.textContent = 'Load Image';
     }
 
     function showPreview(file) {
       if (!validateFile(file)) return;
       
-      hideError();
+      hideMessages();
       originalFileName = file.name;
 
       // Show preview image
@@ -891,6 +1047,10 @@
       uploadSection.style.display = 'none';
       document.getElementById('urlContent').style.display = 'none';
       previewSection.style.display = 'block';
+      
+      // Reset URL submit button
+      urlSubmitBtn.disabled = false;
+      urlSubmitBtn.textContent = 'Load Image';
     }
 
     async function convertImageFormat(file, targetFormat) {
@@ -942,7 +1102,7 @@
     async function uploadImage() {
       if (!selectedFile) return;
       
-      hideError();
+      hideMessages();
       uploadConfirmBtn.disabled = true;
       uploadConfirmBtn.textContent = 'Processing...';
       progressBar.style.display = 'block';
@@ -976,7 +1136,7 @@
 
         updateProgress(80);
         if (!response.ok) {
-          throw new Error('Upload failed');
+          throw new Error(`Upload failed: ${response.status} ${response.statusText}`);
         }
 
         const data = await response.json();
@@ -998,7 +1158,7 @@
         }
       } catch (error) {
         console.error('Upload error:', error);
-        showError('Upload failed. Please try again.');
+        showError(`Upload failed: ${error.message}. Please try again.`);
         uploadConfirmBtn.disabled = false;
         uploadConfirmBtn.textContent = 'Upload';
         progressBar.style.display = 'none';
